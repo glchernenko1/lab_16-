@@ -1,7 +1,7 @@
-#include "list.h"
+#include "mylist.h"
 
 
-void list::coppy(const node * from_first, const node * from_last)
+void mylist::coppy(const node * from_first, const node * from_last)
 {
 	first = nullptr;
 	last = nullptr;
@@ -19,7 +19,7 @@ void list::coppy(const node * from_first, const node * from_last)
 	last = *to;
 }
 
-void list::delite_list()
+void mylist::delite_mylist()
 {
 	while (first)
 	{
@@ -33,26 +33,26 @@ void list::delite_list()
 	last = nullptr;
 }
 
-list::~list()
+mylist::~mylist()
 {
-	delite_list();
+	delite_mylist();
 }
 
-list::list(const list & l)
+mylist::mylist(const mylist & l)
 {
 	coppy(l.first,l.last);
 }
 
-list & list::operator=(const list & l)
+mylist & mylist::operator=(const mylist & l)
 {
-	delite_list();
+	delite_mylist();
 	coppy(l.first, l.last);
 	return *this;
 }
 
-void list::push_back(const datatype & x)
+void mylist::push_back(const datatype & x)
 {
-	if (last = nullptr)
+	if (last == nullptr)
 	{
 		last = new node;
 		last->prev = nullptr;
@@ -68,9 +68,9 @@ void list::push_back(const datatype & x)
 	last->next = nullptr;
 }
 
-void list::push_front(const datatype & x)
+void mylist::push_front(const datatype & x)
 {
-	if (first = nullptr)
+	if (first == nullptr)
 	{
 		first = new node;
 		first->prev = nullptr;
@@ -86,19 +86,19 @@ void list::push_front(const datatype & x)
 	first->prev = nullptr;
 }
 
-list::datatype list::back() const
+mylist::datatype mylist::back() const
 {
 	if (!last) throw std::out_of_range("Попытка доступа к элементу пустого списка");
 	return last->data;
 }
 
-list::datatype list::front() const
+mylist::datatype mylist::front() const
 {
 	if (!first) throw std::out_of_range("Попытка доступа к элементу пустого списка");
 	return first->data;
 }
 
-void list::pop_front()
+void mylist::pop_front()
 {
 	node *tmp = first->next;
 	delete first;
@@ -106,7 +106,7 @@ void list::pop_front()
 	first->prev = nullptr;
 }
 
-void list::pop_back()
+void mylist::pop_back()
 {
 	node *tmp = last->prev;
 	delete last;
@@ -114,34 +114,34 @@ void list::pop_back()
 	last->next = nullptr;
 }
 
-bool list::emptiness()
+bool mylist::emptiness()
 {
 	return first==nullptr;
 }
 
-size_t list::cout_list()
+size_t mylist::cout_mylist()
 {
 	int i = 0;
 	node *tmp = first;
 	while (tmp!=nullptr)
 	{
-		tmp->next;
+		tmp=tmp->next;
 		++i;
 	}
 	return i;
 }
 
-list::iterator list::begin()
+mylist::iterator mylist::begin()
 {
 	return iterator(this, first);
 }
 
-list::iterator list::end()
+mylist::iterator mylist::end()
 {
-	return iterator(this, last);
+	return iterator(this, last->next);
 }
 
-list::iterator list::find(const datatype & x) const
+mylist::iterator mylist::find(const datatype & x) const
 {
 	node *tmp = first;
 	while (tmp != nullptr)
@@ -152,7 +152,7 @@ list::iterator list::find(const datatype & x) const
 	return iterator(this, tmp);
 }
 
-void list::insert(const iterator & it, const datatype & x)
+void mylist::insert(const iterator & it, const datatype & x)
 {
 	node *tmp = new node;
 	tmp->data = x;
@@ -162,37 +162,95 @@ void list::insert(const iterator & it, const datatype & x)
 	tmp->next->prev = tmp;
 }
 
-void list::remove(const iterator & it)
+void mylist::remove(const iterator & it)
 {
 	it.current->prev->next = it.current->next;
 	it.current->next->prev = it.current->prev;
-	//delete it.current;
+	delete it.current;
 	
 }
 
-list::datatype & list::iterator::operator*()
+mylist::datatype & mylist::iterator::operator*()
 {
 	return current->data;
 }
 
-list::iterator & list::iterator::operator++()
+mylist::iterator & mylist::iterator::operator++()
 {
-	 *++current;
+	 current=current->next;
 	 return *this;
 }
 
-list::iterator list::iterator::operator++(int)
+mylist::iterator mylist::iterator::operator++(int)
 {
-	 *current++;
+	current = current->next;
 	 return *this;
 }
 
-bool list::iterator::operator==(const iterator & it) const
+mylist::iterator & mylist::iterator::operator--()
+{
+	current = current->prev;
+	return *this;
+}
+
+mylist::iterator mylist::iterator::operator--(int)
+{
+	current = current->prev;
+	return *this;
+}
+
+bool mylist::iterator::operator==(const iterator & it) const
 {
 	return current==it.current && collection==it.collection;
 }
 
-bool list::iterator::operator!=(const iterator & it) const
+bool mylist::iterator::operator!=(const iterator & it) const
 {
 	return !operator==(it);
+}
+
+
+std::istream & operator>>(std::istream & is, mylist & l)
+{	
+	mylist::datatype a;
+	size_t t;
+	is >> t;
+	for (int i = 0; i < t; ++i)
+	{
+		
+		
+		is >> a;
+		l.push_back(a);
+	}
+	return is;
+}
+
+std::ostream &operator<<(std::ostream &os, mylist &l)
+{
+	os << l.cout_mylist() << " ";
+	for (mylist::iterator i = l.begin(); i != l.end(); ++i) {
+		os << *i << " ";
+	}
+	return os;
+}
+
+
+void mylist::  sort()
+{
+	
+	iterator prev=begin();
+	for (; prev.current->next != nullptr; ++prev);
+	for (iterator i = begin(); i!= end(); ++i)
+	{
+		for (iterator r = begin(); r != prev; ++r)
+		{
+			
+			if (*r <r.current->next->data)
+			{
+				std::swap(*r, r.current->next->data);
+				
+			}
+		}
+		
+	}
 }

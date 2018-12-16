@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-class list
+class mylist
 {
 private:
 	typedef int datatype;
@@ -14,13 +14,13 @@ private:
 	node *first, *last;
 
 	void coppy(const node * from_first, const node * from_last);
-	void delite_list();
+	void delite_mylist();
 
 public:
-	list() :first(nullptr), last(nullptr) {};
-	~list();
-	list(const list &l);
-	list &operator=(const list &l);
+	mylist() :first(nullptr), last(nullptr) {};
+	~mylist();
+	mylist(const mylist &l);
+	mylist &operator=(const mylist &l);
 	// Добавление элемента в конец
 	void push_back(const datatype &x);
 	// Добавление элемента в начало
@@ -31,9 +31,8 @@ public:
 	void pop_front();
 	void pop_back();
 	bool emptiness();
-	size_t cout_list();
-
-
+	size_t cout_mylist();
+	void sort();
 
 
 	class iterator {
@@ -42,19 +41,25 @@ public:
 		node *current;
 
 		// Указатель на список
-		const list *collection;
+		const mylist *collection;
 
 		// Закрытый конструктор
 		// доступен только в дружественных классах 
-		iterator(const list *collection, node *current);
+		iterator(const mylist *collection, node *current) :collection(collection), current(current) {};
 	public:
 		// Разименование
 		datatype &operator*();
 
 		// Инкремент (префиксный)
 		iterator &operator++();
+
+
 		// Инкремент (постфиксный)
 		iterator operator++(int);
+
+		iterator &operator--();
+		// Инкремент (постфиксный)
+		iterator operator--(int);
 
 		// Сравнение на равенство
 		bool operator==(const iterator &it) const;
@@ -63,17 +68,20 @@ public:
 
 		// Объявляем класс, 
 		// которому можно создавать итераторы
-		friend class list;
+		friend class mylist;
 	};
 
 	iterator begin();
 	// Получение итератора за концом списка
 	iterator end();
 
+
+
+
 	// Поиск элемента с заданным значением в списке
 	// и возвращение итератора, указывающего на него.
 	// В случае, если элемент с заданным значением не найден,
-	// Возвращается итератор list::end()
+	// Возвращается итератор mylist::end()
 	iterator find(const datatype &x) const;
 
 	// Вставка элемента, перед элементом на который указывает итератор
@@ -83,6 +91,7 @@ public:
 	void remove(const iterator &it);
 
 
-
+friend std::istream &operator>>(std::istream &is, mylist &l);
 };
 
+std::ostream &operator<<(std::ostream &os, mylist &l);
